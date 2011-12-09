@@ -4,5 +4,5 @@ This is intended to be a general purpose component of CollabKit, enabling a vari
 
 Sequence has two primary components:
 
-1. __``seq.Flow``__ + __``seq.Block``__<br>Fluid drag-n-drop user interface for arranging objects in a sequence
-2. __``seq.Transaction``__<br>Operational transformation to support real-time collaboration for adding/removing/arranging
+1. ``seq.Flow`` + ``seq.Block``<br>Fluid drag-n-drop user interface for arranging objects in a sequence
+2. ``seq.Transaction``<br>Operational transformation to support real-time collaboration for adding/removing/arranging
