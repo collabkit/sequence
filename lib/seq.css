@@ -1,0 +1,28 @@
+.seq-flow {
+	height: 100%;
+	-webkit-border-radius: 0.5em;
+	-moz-border-radius: 0.5em;
+	border-radius: 0.5em;
+}
+
+.seq-block {
+	position: absolute;
+	border: solid 2px #cccccc;
+	padding: 0.75em;
+	-webkit-border-radius: 0.5em;
+	-moz-border-radius: 0.5em;
+	border-radius: 0.5em;
+	background-color: white;
+	opacity: 0;
+}
+
+.seq-block-visible {
+	opacity: 1;
+}
+
+.seq-flow-animated .seq-block.seq-block-animated {
+	-webkit-transition: opacity 0.3s ease-in-out, left 0.3s ease-in-out, top 0.3s ease-in-out;
+	-moz-transition: opacity 0.3s ease-in-out, left 0.3s ease-in-out, top 0.3s ease-in-out;
+	-o-transition: opacity 0.3s ease-in-out, left 0.3s ease-in-out, top 0.3s ease-in-out;
+	transition: opacity 0.3s ease-in-out, left 0.3s ease-in-out, top 0.3s ease-in-out;
+}
