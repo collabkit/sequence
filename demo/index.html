@@ -20,18 +20,18 @@
 		<script src="../lib/crypto/crypto.js" type="text/javascript"></script>
 		<script src="../lib/crypto/sha1.js" type="text/javascript"></script>
 		<script src="../lib/seq/seq.js" type="text/javascript"></script>
-		<script src="../lib/seq/seq.Flow.js" type="text/javascript"></script>
+		<script src="../lib/seq/seq.Sequence.js" type="text/javascript"></script>
+		<script src="../lib/seq/seq.Observable.js" type="text/javascript"></script>
+		<script src="../lib/seq/seq.ObservableSequence.js" type="text/javascript"></script>
 		<script src="../lib/seq/seq.Block.js" type="text/javascript"></script>
+		<script src="../lib/seq/seq.Flow.js" type="text/javascript"></script>
 		<script>
-			var flow = new seq.Flow(
-				$('#flow'),
-				[
-					{ 'id': 'block-1', 'text': 'one' },
-					{ 'id': 'block-2', 'text': 'two' },
-					{ 'id': 'block-3', 'text': 'three' }
-				],
-				10
-			);
+			var sequence = new seq.ObservableSequence( [
+				new seq.Block( 'block-1', 'one' ),
+				new seq.Block( 'block-2', 'two' ),
+				new seq.Block( 'block-3', 'three' )
+			] );
+			var flow = new seq.Flow( $('#flow'), sequence, { 'spacing': 10 } );
 		</script>
 	</body>
 </html>
