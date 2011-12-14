@@ -190,7 +190,7 @@ test( 'seq.Transaction.transform', function() {
 		'transform - splice(remove)|splice(remove) - overlapping left'
 	);
 
-	// Test 15
+	// Test 17
 	deepEqual(
 		seq.Transaction.newFromSpliceItems( 0, sequence, 0, 3 ).transform(
 			seq.Transaction.newFromSpliceItems( 0, sequence, 2, 3 )
@@ -200,6 +200,42 @@ test( 'seq.Transaction.transform', function() {
 			new seq.Transaction( 0, [new seq.RemoveOperation( 0, [a, b] )] )
 		],
 		'transform - splice(remove)|splice(remove) - overlapping right'
+	);
+
+	// Test 18
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 2, 1 ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 2, 0, f )
+		),
+		[
+			new seq.Transaction( 0, [new seq.InsertOperation( 2, [f] )] ),
+			new seq.Transaction( 0, [new seq.RemoveOperation( 3, [c] )] )
+		],
+		'transform - splice(remove)|splice(insert) - same index'
+	);
+
+	// Test 19
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 2, 0, f ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 2, 1 )
+		),
+		[
+			new seq.Transaction( 0, [new seq.RemoveOperation( 3, [c] )] ),
+			new seq.Transaction( 0, [new seq.InsertOperation( 2, [f] )] )
+		],
+		'transform - splice(insert)|splice(remove) - same index'
+	);
+
+	// Test 20
+	deepEqual(
+		seq.Transaction.newFromPushItem( 0, sequence, f ).transform(
+			seq.Transaction.newFromShiftItem( 0, sequence, a )
+		),
+		[
+			new seq.Transaction( 0, [new seq.RemoveOperation( 0, [a] )] ),
+			new seq.Transaction( 0, [new seq.InsertOperation( 4, [f] )] )
+		],
+		'transform - push|shift'
 	);
 } ); 
 
