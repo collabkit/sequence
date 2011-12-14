@@ -10,8 +10,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 1
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromPushItem( 0, sequence, d ),
+		seq.Transaction.newFromPushItem( 0, sequence, d ).transform(
 			seq.Transaction.newFromPushItem( 0, sequence, e )
 		),
 		[
@@ -23,8 +22,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 2
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromPushItem( 0, sequence, d ),
+		seq.Transaction.newFromPushItem( 0, sequence, d ).transform(
 			seq.Transaction.newFromPushItem( 0, sequence, d )
 		),
 		[
@@ -36,8 +34,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 3
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromUnshiftItem( 0, sequence, d ),
+		seq.Transaction.newFromUnshiftItem( 0, sequence, d ).transform(
 			seq.Transaction.newFromUnshiftItem( 0, sequence, e )
 		),
 		[
@@ -49,8 +46,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 4
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromUnshiftItem( 0, sequence, d ),
+		seq.Transaction.newFromUnshiftItem( 0, sequence, d ).transform(
 			seq.Transaction.newFromUnshiftItem( 0, sequence, d )
 		),
 		[
@@ -62,8 +58,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 5
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromPushItem( 0, sequence, d ),
+		seq.Transaction.newFromPushItem( 0, sequence, d ).transform(
 			seq.Transaction.newFromUnshiftItem( 0, sequence, a )
 		),
 		[
@@ -75,8 +70,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 6
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromUnshiftItem( 0, sequence, a ),
+		seq.Transaction.newFromUnshiftItem( 0, sequence, a ).transform(
 			seq.Transaction.newFromPushItem( 0, sequence, d )
 		),
 		[
@@ -88,8 +82,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 7
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromPopItem( 0, sequence ),
+		seq.Transaction.newFromPopItem( 0, sequence ).transform(
 			seq.Transaction.newFromPopItem( 0, sequence )
 		),
 		[
@@ -101,8 +94,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 8
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromShiftItem( 0, sequence ),
+		seq.Transaction.newFromShiftItem( 0, sequence ).transform(
 			seq.Transaction.newFromShiftItem( 0, sequence )
 		),
 		[
@@ -114,8 +106,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 9
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromShiftItem( 0, sequence ),
+		seq.Transaction.newFromShiftItem( 0, sequence ).transform(
 			seq.Transaction.newFromPopItem( 0, sequence )
 		),
 		[
@@ -127,8 +118,7 @@ test( 'seq.Transaction.transform', function() {
 
 	// Test 10
 	deepEqual(
-		seq.Transaction.transform(
-			seq.Transaction.newFromPopItem( 0, sequence ),
+		seq.Transaction.newFromPopItem( 0, sequence ).transform(
 			seq.Transaction.newFromShiftItem( 0, sequence )
 		),
 		[
@@ -137,7 +127,79 @@ test( 'seq.Transaction.transform', function() {
 		],
 		'transform - pop|shift'
 	);
-} );
+
+	// Test 11
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 1, 0, d ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 3, 0, e )
+		),
+		[
+			new seq.Transaction( 0, [new seq.InsertOperation( 4, [e] )] ),
+			new seq.Transaction( 0, [new seq.InsertOperation( 1, [d] )] )
+		],
+		'transform - splice(insert)|splice(insert)'
+	);
+
+	// Test 12
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 0, 1 ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 2, 1 )
+		),
+		[
+			new seq.Transaction( 0, [new seq.RemoveOperation( 1, [c] )] ),
+			new seq.Transaction( 0, [new seq.RemoveOperation( 0, [a] )] )
+		],
+		'transform - splice(remove)|splice(remove)'
+	);
+
+	// Test 13
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 0, 2 ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 1, 1 )
+		),
+		[
+			new seq.Transaction( 0, [null] ),
+			new seq.Transaction( 0, [new seq.RemoveOperation( 0, [a] )] )
+		],
+		'transform - splice(remove)|splice(remove) - inside'
+	);
+
+	// Test 14
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 1, 1 ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 0, 2 )
+		),
+		[
+			new seq.Transaction( 0, [new seq.RemoveOperation( 0, [a] )] ),
+			new seq.Transaction( 0, [null] )
+		],
+		'transform - splice(remove)|splice(remove) - outisde'
+	);
+
+	// Test 15
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 0, 2 ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 1, 2 )
+		),
+		[
+			new seq.Transaction( 0, [new seq.RemoveOperation( 0, [c] )] ),
+			new seq.Transaction( 0, [new seq.RemoveOperation( 0, [a] )] )
+		],
+		'transform - splice(remove)|splice(remove) - overlapping right'
+	);
+
+	// Test 16
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 1, 2 ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 0, 2 )
+		),
+		[
+			new seq.Transaction( 0, [new seq.RemoveOperation( 0, [a] )] ),
+			new seq.Transaction( 0, [new seq.RemoveOperation( 0, [c] )] )
+		],
+		'transform - splice(remove)|splice(remove) - overlapping left'
+	);
+} ); 
 
 test( 'seq.Transaction.newFrom*', function() {
 	var a = 'a',
