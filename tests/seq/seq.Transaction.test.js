@@ -495,7 +495,93 @@ test( 'seq.Transaction.transform', function() {
 		],
 		'transform - splice(insert)|splice(remove) - b inside a'
 	);
-} ); 
+
+	/*
+	 * Test 25
+	 * 
+	 * abcde
+	 *   a: rem( 0, ab ): |cde
+	 *     b': ins( 0, fg ): [fg]cde
+	 *   b: ins( 0, fg ): a[fg]bcde
+	 *     a': rem( 0, a ), rem( 2, b ): |fg|cde
+	 */
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 0, 2 ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 1, 0, f, g )
+		),
+		[
+			new seq.Transaction( 0, [new seq.InsertOperation( 0, [f, g] )] ),
+			new seq.Transaction( 0, [
+				new seq.RemoveOperation( 0, [a] ),
+				new seq.RemoveOperation( 2, [b] )
+			] )
+		],
+		'transform - splice(remove)|splice(insert) - a overlapping left of b'
+	);
+
+	/*
+	 * Test 26
+	 * 
+	 * abcde
+	 *   a: rem( 0, bc ): a|de
+	 *     b': ins( 0, fg ): [fg]ade
+	 *   b: ins( 0, fg ): [fg]abcde
+	 *     a': rem( 3, bc ): fga|de
+	 */
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 1, 2 ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 0, 0, f, g )
+		),
+		[
+			new seq.Transaction( 0, [new seq.InsertOperation( 0, [f, g] )] ),
+			new seq.Transaction( 0, [new seq.RemoveOperation( 3, [b, c] )] )
+		],
+		'transform - splice(remove)|splice(insert) - a overlapping right of b'
+	);
+
+	/*
+	 * Test 27
+	 * 
+	 * abcde
+	 *   a: ins( 0, fg ): a[fg]bcde
+	 *     b': rem( 0, a ), rem( 2, b ): |fg|cde
+	 *   b: rem( 0, ab ): |cde
+	 *     a': ins( 0, fg ): [fg]cde
+	 */
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 1, 0, f, g ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 0, 2 )
+		),
+		[
+			new seq.Transaction( 0, [
+				new seq.RemoveOperation( 0, [a] ),
+				new seq.RemoveOperation( 2, [b] )
+			] ),
+			new seq.Transaction( 0, [new seq.InsertOperation( 0, [f, g] )] )
+		],
+		'transform - splice(insert)|splice(remove) - a overlapping left of b'
+	);
+
+	/*
+	 * Test 28
+	 * 
+	 * abcde
+	 *   a: ins( 0, fg ): [fg]abcde
+	 *     b': rem( 3, bc ): fga|de
+	 *   b: rem( 0, bc ): a|de
+	 *     a': ins( 0, fg ): [fg]ade
+	 */
+	deepEqual(
+		seq.Transaction.newFromSpliceItems( 0, sequence, 0, 0, f, g ).transform(
+			seq.Transaction.newFromSpliceItems( 0, sequence, 1, 2 )
+		),
+		[
+			new seq.Transaction( 0, [new seq.RemoveOperation( 3, [b, c] )] ),
+			new seq.Transaction( 0, [new seq.InsertOperation( 0, [f, g] )] )
+		],
+		'transform - splice(insert)|splice(remove) - a overlapping right of b'
+	);
+} );
 
 test( 'seq.Transaction.newFrom*', function() {
 	var a = 'a',
