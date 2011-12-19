@@ -1,0 +1,26 @@
+module( 'ion.StringOperation' );
+
+test( 'newFrom*', function() {
+	var doc = new ion.Document( { 'a': '01234' } );
+
+	// Test 1
+	deepEqual(
+		ion.StringOperation.newFromInsert( doc, ['a'], 2, '234' ),
+		new ion.StringOperation( ['a'], [['insert', 2, '234']] ),
+		'Insert builds correct components'
+	);
+
+	// Test 2
+	deepEqual(
+		ion.StringOperation.newFromDelete( doc, ['a'], 2, 3 ),
+		new ion.StringOperation( ['a'], [['delete', 2, '234']] ),
+		'Delete builds correct components'
+	);
+
+	// Test 3
+	deepEqual(
+		ion.StringOperation.newFromReplace( doc, ['a'], 2, 3, '432' ),
+		new ion.StringOperation( ['a'], [['delete', 2, '234'], ['insert', 2, '432']] ),
+		'Replace builds correct components'
+	);
+} );
