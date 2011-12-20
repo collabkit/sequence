@@ -12,7 +12,7 @@ test( 'newFrom*', function() {
 
 	// Test 2
 	deepEqual(
-		ion.ArrayOperation.newFromDelete( doc, ['a'], 2, 2 ),
+		ion.ArrayOperation.newFromDelete( doc, ['a'], 2 ),
 		new ion.ArrayOperation( ['a'], [['delete', 2, 2]] ),
 		'Delete builds correct components'
 	);
@@ -27,7 +27,43 @@ test( 'newFrom*', function() {
 	// Test 4
 	deepEqual(
 		ion.ArrayOperation.newFromMove( doc, ['a'], 2, 4 ),
-		new ion.ArrayOperation( ['a'], [['delete', 2, 2], ['insert', 3, 2]] ),
+		new ion.ArrayOperation( ['a'], [['delete', 2, 2], ['insert', 4, 2]] ),
 		'Move builds correct components'
+	);
+} );
+
+test( 'commit', function() {
+	var doc = new ion.Document( { 'a': [0, 1, 2, 3, 4] } );
+
+	// Test 1
+	ion.ArrayOperation.newFromInsert( doc, ['a'], 2, 22 ).commit( doc );
+	deepEqual(
+		doc.traverse( 'a' ),
+		[0, 1, 22, 2, 3, 4],
+		'Inserts can be committed'
+	);
+
+	// Test 2
+	ion.ArrayOperation.newFromDelete( doc, ['a'], 2 ).commit( doc );
+	deepEqual(
+		doc.traverse( 'a' ),
+		[0, 1, 2, 3, 4],
+		'Deletes can be committed'
+	);
+
+	// Test 3
+	ion.ArrayOperation.newFromReplace( doc, ['a'], 2, 22 ).commit( doc );
+	deepEqual(
+		doc.traverse( 'a' ),
+		[0, 1, 22, 3, 4],
+		'Replaces can be committed'
+	);
+
+	// Test 4
+	ion.ArrayOperation.newFromMove( doc, ['a'], 2, 4 ).commit( doc );
+	deepEqual(
+		doc.traverse( 'a' ),
+		[0, 1, 3, 4, 22],
+		'Moves can be committed'
 	);
 } );
