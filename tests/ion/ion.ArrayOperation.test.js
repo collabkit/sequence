@@ -6,28 +6,28 @@ test( 'newFrom*', function() {
 	// Test 1
 	deepEqual(
 		ion.ArrayOperation.newFromInsert( doc, ['a'], 2, 22 ),
-		new ion.ArrayOperation( ['a'], [['insert', 2, 22]] ),
+		new ion.ArrayOperation( ['a'], [['retain', 2], ['insert', 22]] ),
 		'Insert builds correct components'
 	);
 
 	// Test 2
 	deepEqual(
 		ion.ArrayOperation.newFromDelete( doc, ['a'], 2 ),
-		new ion.ArrayOperation( ['a'], [['delete', 2, 2]] ),
+		new ion.ArrayOperation( ['a'], [['retain', 2], ['delete', 2]] ),
 		'Delete builds correct components'
 	);
 
 	// Test 3
 	deepEqual(
 		ion.ArrayOperation.newFromReplace( doc, ['a'], 2, 22 ),
-		new ion.ArrayOperation( ['a'], [['delete', 2, 2], ['insert', 2, 22]] ),
+		new ion.ArrayOperation( ['a'], [['retain', 2], ['delete', 2], ['insert', 22]] ),
 		'Replace builds correct components'
 	);
 
 	// Test 4
 	deepEqual(
 		ion.ArrayOperation.newFromMove( doc, ['a'], 2, 4 ),
-		new ion.ArrayOperation( ['a'], [['delete', 2, 2], ['insert', 4, 2]] ),
+		new ion.ArrayOperation( ['a'], [['retain', 2], ['delete', 2], ['retain', 2], ['insert', 2]] ),
 		'Move builds correct components'
 	);
 } );
