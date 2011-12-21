@@ -36,3 +36,13 @@ test( 'clone', function() {
 		clone.getComponents(), original.getComponents(), 'Creates new components array'
 	);
 } );
+
+test( 'invert', function() {
+	// Test 1
+	var op = new ion.Operation( [], [['retain', 1], ['insert', 2], ['delete', 3]] );
+	deepEqual(
+		op.invert().getComponents(),
+		[['retain', 1], ['delete', 2], ['insert', 3]],
+		'Invert swaps delete and insert types'
+	);
+} );
